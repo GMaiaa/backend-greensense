@@ -1,8 +1,8 @@
 package com.greensense.controller
 
-import com.greensense.dto.AuthRequest
-import com.greensense.dto.AuthResponse
-import com.greensense.dto.RegisterRequest
+import com.greensense.security.dto.AuthRequest
+import com.greensense.security.dto.AuthResponse
+import com.greensense.security.dto.RegisterRequest
 import com.greensense.security.AuthenticationService
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity

@@ -21,7 +21,3 @@ data class Usuario(
     val role: Role
 )
 
-enum class Role {
-    ROLE_ADMIN,
-    ROLE_OPERACIONAL
-}

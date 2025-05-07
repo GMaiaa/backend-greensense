@@ -1,6 +1,8 @@
 package com.greensense.security
 
-import com.greensense.dto.*
+import com.greensense.security.dto.AuthRequest
+import com.greensense.security.dto.AuthResponse
+import com.greensense.security.dto.RegisterRequest
 import com.greensense.model.Role
 import com.greensense.model.Usuario
 import com.greensense.repository.UsuarioRepository
@@ -8,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+
 
 @Service
 class AuthenticationService(

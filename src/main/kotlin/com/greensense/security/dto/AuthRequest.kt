@@ -1,5 +1,6 @@
-package com.greensense.dto
+package com.greensense.security.dto
 
-data class AuthResponse(
-    val token: String
+data class AuthRequest(
+    val username: String,
+    val senha: String
 )
