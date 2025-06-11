@@ -35,7 +35,11 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
-    runtimeOnly("org.postgresql:postgresql:42.7.3")
+    // ⬇️ Troque isto…
+    // runtimeOnly("org.postgresql:postgresql:42.7.3")
+
+    // ⬆️ …por isto:
+    runtimeOnly("com.mysql:mysql-connector-j")   // Boot aplica a versão 8.x mais recente
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
