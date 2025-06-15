@@ -6,6 +6,7 @@ import com.greensense.security.dto.RegisterRequest
 import com.greensense.model.Role
 import com.greensense.model.Usuario
 import com.greensense.repository.UsuarioRepository
+import com.greensense.security.dto.ChangePasswordRequest
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -37,5 +38,15 @@ class AuthenticationService(
         val user = repository.findByUsername(request.username)!!
         val token = jwtService.generateToken(user)
         return AuthResponse(token)
+    }
+
+    fun changePassword(request: ChangePasswordRequest) {
+        val user = repository.findByUsername(request.username)
+            ?: throw Exception("Usuário não encontrado")
+        if (!encoder.matches(request.senhaAtual, user.senha)) {
+            throw Exception("Senha atual incorreta")
+        }
+        val updatedUser = user.copy(senha = encoder.encode(request.novaSenha))
+        repository.save(updatedUser)
     }
 }

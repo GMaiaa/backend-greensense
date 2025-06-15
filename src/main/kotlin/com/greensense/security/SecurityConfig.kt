@@ -28,7 +28,12 @@ fun filterChain(http: HttpSecurity): SecurityFilterChain {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/register").permitAll() // <-- ADICIONA ESSA LINHA AQUI
                 .requestMatchers(HttpMethod.POST, "/api/lixeiras/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/lixeiras/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/coletas/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/lixeiras/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/auth/usuarios").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/auth/usuarios/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/auth/usuarios/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         }
         .sessionManagement {
