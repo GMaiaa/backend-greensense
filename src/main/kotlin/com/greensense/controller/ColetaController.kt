@@ -23,6 +23,23 @@ class ColetaController(private val service: ColetaService) {
         else ResponseEntity.notFound().build()
     }
 
+@PutMapping("/{id}")
+fun atualizar(@PathVariable id: UUID, @RequestBody coleta: Coleta): ResponseEntity<Coleta> {
+    val coletaAtualizada = service.atualizar(id, coleta)
+    return ResponseEntity.ok(coletaAtualizada)
+}
+
+@DeleteMapping("/{id}")
+fun deletar(@PathVariable id: UUID): ResponseEntity<Void> {
+    return if (service.buscarPorId(id) != null) {
+        service.deletar(id)
+        ResponseEntity.noContent().build()
+    } else {
+        ResponseEntity.notFound().build()
+    }
+}
+
+
     @GetMapping("/lixeira/{lixeiraId}")
     fun listarPorLixeira(@PathVariable lixeiraId: UUID): List<Coleta> =
         service.listarPorLixeira(lixeiraId)

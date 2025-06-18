@@ -20,6 +20,15 @@ class LixeiraController(private val service: LixeiraService) {
         else ResponseEntity.notFound().build()
     }
 
+    @PutMapping("/{id}")
+    fun atualizar(@PathVariable id: UUID, @RequestBody lixeira: Lixeira): ResponseEntity<Lixeira> {
+        val lixeiraAtualizada = service.atualizar(id, lixeira)
+        return ResponseEntity.ok(lixeiraAtualizada)
+    }
+
     @PostMapping
     fun cadastrar(@RequestBody lixeira: Lixeira): Lixeira = service.cadastrar(lixeira)
+
+      @DeleteMapping("/{id}")
+    fun deletar(@PathVariable id: UUID) = service.deletar(id)
 }

@@ -63,4 +63,15 @@ class AuthenticationService(
             )
         )
     }
+
+ fun listarUsuarios(): List<UserResponse> {
+    return repository.findAll().map {
+        UserResponse(
+            id = it.id.toString(),
+            username = it.username,
+            role = it.role.name
+        )
+    }
+}
+
 }

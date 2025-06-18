@@ -1,19 +1,38 @@
 package com.greensense.model
 
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
+import java.time.LocalDateTime
+import java.util.*
 
 @Entity
-@Table(name = "notificacoes")
 data class Notificacao(
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    val id: String? = null,
+    val id: String = UUID.randomUUID().toString(),
+
+    @Column(nullable = false)
     val titulo: String,
+
+    @Column(nullable = false)
     val mensagem: String,
-    val dataCriacao: Long = System.currentTimeMillis(),
-    var lida: Boolean = false
+
+    @Column(nullable = false)
+    val tipo: String,
+
+    @ManyToOne
+    @JoinColumn(name = "destinatario_id")
+    val destinatario: Usuario,
+
+    @ManyToOne
+    @JoinColumn(name = "lixeira_id")
+    val lixeira: Lixeira? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "coleta_id")
+    val coleta: Coleta? = null,
+
+    @Column(nullable = false)
+    var lida: Boolean = false,
+
+    @Column(nullable = false)
+    val dataCriacao: LocalDateTime = LocalDateTime.now()
 )
