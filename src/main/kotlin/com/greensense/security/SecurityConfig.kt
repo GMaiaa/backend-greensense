@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -15,8 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
-
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
@@ -28,14 +27,18 @@ class SecurityConfig(
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .cors { } // 🔥 Habilita CORS com config abaixo
+            .cors { }
             .csrf { csrf -> csrf.disable() }
             .authorizeHttpRequests { auth ->
                 auth
+                    // 🔓 Libera login e cadastro
                     .requestMatchers("/api/auth/**").permitAll()
-                    .requestMatchers("/register").permitAll()
+
+                    // 🔐 Exige ADMIN para essas rotas específicas
                     .requestMatchers(HttpMethod.POST, "/api/lixeiras/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST, "/api/coletas/**").hasRole("ADMIN")
+
+                    // 🔒 Qualquer outra requisição exige token
                     .anyRequest().authenticated()
             }
             .sessionManagement { session ->
