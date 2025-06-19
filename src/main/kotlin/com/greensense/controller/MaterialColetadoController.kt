@@ -4,17 +4,23 @@ import com.greensense.dto.material.MaterialColetadoRequest
 import com.greensense.model.MaterialColetado
 import com.greensense.service.MaterialColetadoService
 import org.springframework.web.bind.annotation.*
+import java.util.UUID // ✅ Import obrigatório
 
 @RestController
 @RequestMapping("/api/material")
 class MaterialColetadoController(
     private val service: MaterialColetadoService
 ) {
+
     @GetMapping
     fun listar(): List<MaterialColetado> = service.listar()
 
     @GetMapping("/{id}")
     fun buscarPorId(@PathVariable id: Long) = service.buscarPorId(id)
+
+    @GetMapping("/lixeira/{lixeiraId}")
+    fun listarPorLixeira(@PathVariable lixeiraId: UUID): List<MaterialColetado> =
+        service.listarPorLixeira(lixeiraId)
 
     @PostMapping
     fun salvar(@RequestBody request: MaterialColetadoRequest) = service.salvar(request)

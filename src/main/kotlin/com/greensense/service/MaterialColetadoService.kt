@@ -5,6 +5,7 @@ import com.greensense.model.MaterialColetado
 import com.greensense.repository.LixeiraRepository
 import com.greensense.repository.MaterialColetadoRepository
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class MaterialColetadoService(
@@ -14,6 +15,10 @@ class MaterialColetadoService(
     fun listar(): List<MaterialColetado> = repository.findAll()
 
     fun buscarPorId(id: Long): MaterialColetado? = repository.findById(id).orElse(null)
+
+    fun listarPorLixeira(lixeiraId: UUID): List<MaterialColetado> {
+    return repository.findByLixeiraId(lixeiraId)
+}
 
     fun salvar(request: MaterialColetadoRequest): MaterialColetado {
         val lixeira = lixeiraRepository.findById(request.lixeiraId)

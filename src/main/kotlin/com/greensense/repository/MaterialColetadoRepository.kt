@@ -2,7 +2,8 @@ package com.greensense.repository
 
 import com.greensense.model.MaterialColetado
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
+import java.util.*
 
-@Repository
-interface MaterialColetadoRepository : JpaRepository<MaterialColetado, Long>
+interface MaterialColetadoRepository : JpaRepository<MaterialColetado, Long> {
+    fun findByLixeiraId(lixeiraId: UUID): List<MaterialColetado>
+}
