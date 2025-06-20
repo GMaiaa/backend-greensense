@@ -22,5 +22,6 @@ class UsuarioUserDetailsService(
             usuario.senha,
             listOf(SimpleGrantedAuthority(usuario.role.name))
         )
+
     }
 }

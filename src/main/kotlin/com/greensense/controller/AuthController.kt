@@ -9,6 +9,8 @@ import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import com.greensense.security.dto.UpdateUserRequest
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/auth")
@@ -36,5 +38,22 @@ class AuthController(
     fun listarUsuarios(): ResponseEntity<List<UserResponse>> {
         val usuarios = authService.listarUsuarios()
         return ResponseEntity.ok(usuarios)
+    }
+
+    @PutMapping("/usuarios/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    fun atualizarUsuario(
+        @PathVariable id: UUID,
+        @RequestBody @Valid request: UpdateUserRequest
+    ): ResponseEntity<UserResponse> {
+        val usuarioAtualizado = authService.atualizarUsuario(id, request)
+        return ResponseEntity.ok(usuarioAtualizado)
+    }
+
+    @DeleteMapping("/usuarios/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    fun deletarUsuario(@PathVariable id: UUID): ResponseEntity<Void> {
+        authService.deletarUsuario(id)
+        return ResponseEntity.noContent().build()
     }
 }

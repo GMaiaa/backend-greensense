@@ -1,6 +1,8 @@
 package com.greensense.model
 
 import jakarta.persistence.*
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import java.time.LocalDateTime
 import java.util.UUID
 

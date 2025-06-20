@@ -7,17 +7,20 @@ import com.greensense.security.dto.UserResponse
 import com.greensense.model.Role
 import com.greensense.model.Usuario
 import com.greensense.repository.UsuarioRepository
+import com.greensense.security.dto.UpdateUserRequest
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class AuthenticationService(
     private val repository: UsuarioRepository,
     private val encoder: PasswordEncoder,
     private val jwtService: JWTService,
-    private val authManager: AuthenticationManager
+    private val authManager: AuthenticationManager,
+    private val usuarioRepository: UsuarioRepository
 ) {
     fun registrar(request: RegisterRequest): AuthResponse {
         val role = when (request.role.lowercase()) {
@@ -44,7 +47,7 @@ class AuthenticationService(
             )
         )
     }
-    
+
 
     fun autenticar(request: AuthRequest): AuthResponse {
         val auth = UsernamePasswordAuthenticationToken(request.username, request.senha)
@@ -73,5 +76,30 @@ class AuthenticationService(
         )
     }
 }
+    fun atualizarUsuario(id: UUID, request: UpdateUserRequest): UserResponse {
+        val usuario = repository.findById(id)
+            .orElseThrow { IllegalArgumentException("Usuário não encontrado") }
+
+        val novoRole = when (request.role.uppercase()) {
+            "ROLE_ADMIN" -> Role.ROLE_ADMIN
+            "ROLE_OPERACIONAL" -> Role.ROLE_OPERACIONAL
+            else -> throw IllegalArgumentException("Role inválido: ${request.role}")
+        }
+
+        val usuarioAtualizado = usuario.copy(
+            username = request.username,
+            role = novoRole
+        )
+        repository.save(usuarioAtualizado)
+
+        return UserResponse(
+            id = usuarioAtualizado.id.toString(),
+            username = usuarioAtualizado.username,
+            role = usuarioAtualizado.role.name
+        )
+    }
+    fun deletarUsuario(id: UUID) {
+        usuarioRepository.deleteById(id)
+    }
 
 }
