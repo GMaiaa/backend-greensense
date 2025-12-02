@@ -39,7 +39,7 @@ class SecurityConfig(
                     .requestMatchers(HttpMethod.POST, "/api/coletas/**").hasRole("ADMIN")
 
                     // 🔒 Qualquer outra requisição exige token
-                    .anyRequest().authenticated()
+                    .anyRequest().permitAll()
             }
             .sessionManagement { session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

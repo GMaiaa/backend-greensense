@@ -26,6 +26,7 @@ repositories {
 }
 
 dependencies {
+    // --- Dependências de Produção (O que roda no app) ---
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -33,30 +34,33 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    // ✅ Dependência MQTT
+    // MQTT e JWT
     implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
-
-    // JWT para autenticação
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
-    // Lombok (se estiver usando, embora no Kotlin seja pouco necessário)
+    // Validação e Banco
+    implementation("jakarta.validation:jakarta.validation-api:3.0.2")
+    runtimeOnly("com.mysql:mysql-connector-j")
+
+    // Lombok
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
-    // ✅ Banco de Dados
-    runtimeOnly("com.mysql:mysql-connector-j")
+    // --- Dependências de TESTE (O que roda só nos testes) ---
 
-    // Testes
+    // Spring Boot Starter Test (Já traz JUnit 5, Mockito Core e Assertions)
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.springframework.security:spring-security-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    // Validação
-    implementation("jakarta.validation:jakarta.validation-api:3.0.2")
+    // Mockito para Kotlin (Essencial para resolver "Unresolved Reference")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+
+    // JUnit 5 Engine
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
+
 
 kotlin {
     compilerOptions {
