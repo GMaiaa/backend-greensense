@@ -218,4 +218,169 @@ class ColetaServiceTest {
         assertEquals("Quantidade coletada excede a capacidade da lixeira", exception.message)
         verify(coletaRepository, never()).save(any(Coleta::class.java))
     }
+
+
+    // --- TESTE 7: Listar todas as coletas ---
+@Test
+fun `deve listar todas as coletas`() {
+    val idLixeira = UUID.randomUUID()
+
+    val coleta1 = Coleta(
+        lixeiraId = idLixeira,
+        quantidadeColetada = 30,
+        responsavel = "João",
+        metodo = "Manual",
+        dataHora = LocalDateTime.now()
+    )
+
+    val coleta2 = Coleta(
+        lixeiraId = idLixeira,
+        quantidadeColetada = 60,
+        responsavel = "Maria",
+        metodo = "Manual",
+        dataHora = LocalDateTime.now()
+    )
+
+    `when`(coletaRepository.findAll()).thenReturn(listOf(coleta1, coleta2))
+
+    val resultado = service.listarTodas()
+
+    assertEquals(2, resultado.size)
+    verify(coletaRepository, times(1)).findAll()
+}
+
+// --- TESTE 8: Buscar coleta por ID ---
+@Test
+fun `deve buscar coleta por id`() {
+    val idColeta = UUID.randomUUID()
+    val idLixeira = UUID.randomUUID()
+
+    val coleta = Coleta(
+        id = idColeta,
+        lixeiraId = idLixeira,
+        quantidadeColetada = 40,
+        responsavel = "Carlos",
+        metodo = "Manual",
+        dataHora = LocalDateTime.now()
+    )
+
+    `when`(coletaRepository.findById(idColeta)).thenReturn(Optional.of(coleta))
+
+    val resultado = service.buscarPorId(idColeta)
+
+    assertNotNull(resultado)
+    assertEquals(idColeta, resultado?.id)
+    verify(coletaRepository, times(1)).findById(idColeta)
+}
+
+// --- TESTE 9: Buscar coleta inexistente ---
+@Test
+fun `deve retornar nulo ao buscar coleta inexistente`() {
+    val idColeta = UUID.randomUUID()
+
+    `when`(coletaRepository.findById(idColeta)).thenReturn(Optional.empty())
+
+    val resultado = service.buscarPorId(idColeta)
+
+    assertNull(resultado)
+    verify(coletaRepository, times(1)).findById(idColeta)
+}
+
+// --- TESTE 10: Atualizar coleta existente ---
+@Test
+fun `deve atualizar coleta existente`() {
+    val idColeta = UUID.randomUUID()
+    val idLixeiraOriginal = UUID.randomUUID()
+    val idLixeiraNova = UUID.randomUUID()
+
+    val coletaExistente = Coleta(
+        id = idColeta,
+        lixeiraId = idLixeiraOriginal,
+        quantidadeColetada = 30,
+        responsavel = "João",
+        metodo = "Manual",
+        dataHora = LocalDateTime.now()
+    )
+
+    val coletaAtualizada = Coleta(
+        id = idColeta,
+        lixeiraId = idLixeiraNova,
+        quantidadeColetada = 80,
+        responsavel = "Maria",
+        metodo = "Automático",
+        dataHora = LocalDateTime.now()
+    )
+
+    `when`(coletaRepository.findById(idColeta)).thenReturn(Optional.of(coletaExistente))
+    `when`(coletaRepository.save(any(Coleta::class.java))).thenReturn(coletaAtualizada)
+
+    val resultado = service.atualizar(idColeta, coletaAtualizada)
+
+    assertNotNull(resultado)
+    assertEquals(80, resultado.quantidadeColetada)
+    assertEquals("Maria", resultado.responsavel)
+    assertEquals("Automático", resultado.metodo)
+
+    verify(coletaRepository, times(1)).findById(idColeta)
+    verify(coletaRepository, times(1)).save(any(Coleta::class.java))
+}
+
+// --- TESTE 11: Atualizar coleta inexistente ---
+@Test
+fun `nao deve atualizar coleta inexistente`() {
+    val idColeta = UUID.randomUUID()
+    val idLixeira = UUID.randomUUID()
+
+    val coletaAtualizada = Coleta(
+        lixeiraId = idLixeira,
+        quantidadeColetada = 80,
+        responsavel = "Maria",
+        metodo = "Automático",
+        dataHora = LocalDateTime.now()
+    )
+
+    `when`(coletaRepository.findById(idColeta)).thenReturn(Optional.empty())
+
+    val exception = assertThrows(RuntimeException::class.java) {
+        service.atualizar(idColeta, coletaAtualizada)
+    }
+
+    assertEquals("Coleta não encontrada", exception.message)
+    verify(coletaRepository, times(1)).findById(idColeta)
+    verify(coletaRepository, never()).save(any(Coleta::class.java))
+}
+
+// --- TESTE 12: Deletar coleta ---
+@Test
+fun `deve deletar coleta por id`() {
+    val idColeta = UUID.randomUUID()
+
+    doNothing().`when`(coletaRepository).deleteById(idColeta)
+
+    service.deletar(idColeta)
+
+    verify(coletaRepository, times(1)).deleteById(idColeta)
+}
+
+// --- TESTE 13: Listar coletas por lixeira ---
+@Test
+fun `deve listar coletas por lixeira`() {
+    val idLixeira = UUID.randomUUID()
+
+    val coleta = Coleta(
+        lixeiraId = idLixeira,
+        quantidadeColetada = 50,
+        responsavel = "João",
+        metodo = "Manual",
+        dataHora = LocalDateTime.now()
+    )
+
+    `when`(coletaRepository.findByLixeiraId(idLixeira)).thenReturn(listOf(coleta))
+
+    val resultado = service.listarPorLixeira(idLixeira)
+
+    assertEquals(1, resultado.size)
+    assertEquals(idLixeira, resultado[0].lixeiraId)
+    verify(coletaRepository, times(1)).findByLixeiraId(idLixeira)
+}
 }
